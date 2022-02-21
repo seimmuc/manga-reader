@@ -1,0 +1,30 @@
+<!doctype html>
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="icon" type="image/png" href="{{ url_for('manga.favicon') }}">
+  <link rel="stylesheet" href="{{ url_for('manga.main_css') }}">
+  {% block head %}{% endblock %}
+</head>
+<nav id="navbar">
+  <ul class="nav-group navbar-main">
+    <li class="nav-item">
+      <span class="nav-text">Manga</span>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('manga.view_series', series_slug='seven_deadly_sins') }}">Seven Deadly Sins</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('manga.view_series', series_slug='test_manga') }}">Test</a>
+    </li>
+  </ul>
+</nav>
+<section class="content">
+  <header>
+    {% block header %}{% endblock %}
+  </header>
+  {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+  {% block content %}{% endblock %}
+</section>

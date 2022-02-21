@@ -1,0 +1,61 @@
+{# parameters:
+  series: Dict[str, Any] - series/manga object
+  chapter: Dict[str, Any] - chapter object
+  prev_slug: str - previous chapter's slag, if any
+  next_slug: str - next chapter's slag, if any
+  contents: list - list of pages in the chapter
+#}
+
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block header %}
+  <h1>{% block title %}{{ series_title }}{% endblock %}</h1>
+{% endblock %}
+
+
+
+{% macro chapter_nav(nav_id, show_chapter_name=True) %}
+<div id="{{ nav_id }}" class="chapter-nav">
+  <ul>
+    <li class="chapter-nav-bar">
+      {%- if not prev_slug %}
+      <span class="prev">‹ prev</span>
+      {% else %}
+      <a rel="prev" class="prev" href="{{ url_for('.view_chapter', series_slug=series.slug, chapter_slug=prev_slug) }}">‹ prev</a>
+      {% endif -%}
+
+      <a href="{{ url_for('.view_series', series_slug=series.slug) }}">all chapters</a>
+
+      {%- if not next_slug %}
+      <span class="prev">next ›</span>
+      {% else %}
+      <a rel="next" class="prev" href="{{ url_for('.view_chapter', series_slug=series.slug, chapter_slug=next_slug) }}">next ›</a>
+      {% endif -%}
+    </li>
+  </ul>
+  {% if show_chapter_name -%}
+  <ul>
+    <li class="chapter-nav-bar" style="justify-content: center">
+      <span class="chapter-name">{{ chapter.name }}</span>
+    </li>
+  </ul>
+  {% endif -%}
+</div>
+{% endmacro %}
+
+{% block content %}
+<div>
+  {{- chapter_nav('nav-top') -}}
+
+  <div class="pages-view">
+    {% for page in contents %}
+      <img class="page-img" src="{{ url_for('.media_series', series=series.slug, filename=page.image) }}" title="{{ page.image }}" alt="{{ page.image }}">
+    {% endfor -%}
+  </div>
+
+  {{- chapter_nav('nav-bottom', False) -}}
+</div>
+{% endblock %}

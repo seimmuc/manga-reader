@@ -1,0 +1,65 @@
+{# parameters:
+  series_slug: str - short slug associated with the series containing only lowercase letters and underscore
+  series_title: str - name of the series
+  page: int - current page number
+  last_page: int - total number of pages
+  chapters: List[Dict[str, Any]] - list of chapters to show on the page, each with the with following keys:
+    slug: str - chapter slug
+    name: str - chapter's name
+    thumb: str - thumbnail of the chapter relative to the root of the series
+    contents: list - list of pages, only used to calculate how many pages a chapter has
+#}
+
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block header %}
+  <h1>{% block title %}{{ series_title }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div>
+  <div id="series-view">
+    {% for chapter in chapters %}
+    <article id="{{ '_'.join((series_slug, chapter.slug)) }}" class="chapter-preview">
+      <a href="{{ url_for('.view_chapter', series_slug=series_slug, chapter_slug=chapter.slug) }}">
+        <img class="chapter-thumbnail" src="{{ url_for('.media_series', series=series_slug, filename=chapter.thumb) }}" title="{{ chapter.name }}" alt="{{ chapter.name }}">
+      </a>
+      <div class="chapter-preview-meta">
+        <span class="chapter-name">{{ chapter.name }}</span>
+        <br>
+        <span class="chapter-page-count">{{ chapter.contents | length }} pages</span>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <div style="text-align: center">
+    {% if last_page > 1 %}
+    <ul class="pagination">
+      {% if page == 1 %}
+      <li class="first disabled"><a>«</a></li>
+      {% else %}
+      <li class="first"><a href="{{ url_for('.view_series', series_slug=series_slug, page=1) }}">«</a></li>
+      {% endif %}
+
+      {% for p in range(1, last_page + 1) %}
+        {% if page == p %}
+        <li class="active"><a>{{ p }}</a></li>
+        {% else %}
+        <li><a href="{{ url_for('.view_series', series_slug=series_slug, page=p) }}">{{ p }}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if page == last_page %}
+      <li class="last disabled"><a>»</a></li>
+      {% else %}
+      <li class="last"><a href="{{ url_for('.view_series', series_slug=series_slug, page=last_page) }}">»</a></li>
+      {% endif %}
+    </ul>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
